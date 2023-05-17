@@ -37,7 +37,7 @@ SWAP:
     	//   X1: The address of (pointer to) the second value to be swapped.
 	
 	// INSERT YOUR CODE HERE
-	SUBI SP,SP # 40
+	SUBI SP,SP #40
 	STUR FP,[SP,#0]
 	STUR LR,[SP,#8]
 	STUR X0,[SP,#16]
