@@ -1,31 +1,106 @@
+main:
 LDA X0, a
-ADDI X1,X0,#8
+MOV X7,X0 // For printing purposes only. Please try avoid using the register X7 in your implementation
+ADDI X1, XZR, #0 // 'Low' value stored in X1
+ADDI X6, XZR, #0
+ADDI X2, XZR, #8 //  'High' value stored in X2 (0 and 5 are hypothetical numbers, you can put your test values)
+SUBI X3,X1, #1
+ADDI X4, X1, #0
+BL PARTITION
 
-BL SWAP
+STOP
+
+////////////////////////
+//                    //
+//   	swap	     //
+//                    //
+////////////////////////
 
 SWAP: 
-	//   input:
-	//   X0: The address of (pointer to) the first value to be swapped
-    	//   X1: The address of (pointer to) the second value to be swapped.
 	
-	// INSERT YOUR CODE HERE
 	SUBI SP,SP #40
 	STUR FP,[SP,#0]
 	STUR LR,[SP,#8]
 	STUR X0,[SP,#16]
-	STUR X1,[SP,#24]
+	STUR X6,[SP,#24]
 	ADDI FP,SP,#32
 
 	LDUR X9,[X0,#0]
-	LDUR X10,[X1,#0]
+	LDUR X10,[X6,#0]
 	STUR X10,[X0,#0]
-	STUR X9,[X1,#0]
+	STUR X9,[X6,#0]
 
 SWAPEND:
 	LDUR FP,[SP,#0]
 	LDUR LR,[SP,#8]
 	LDUR X0,[SP,#16]
-	LDUR X1,[SP,#24]
+	LDUR X6,[SP,#24]
 	ADDI SP,SP,#40
 	
 	BR LR
+
+PARTITION: 
+	SUBI SP,SP,#40
+	STUR FP,[SP,#0]
+	STUR LR,[SP,#8]
+	ADDI FP,SP,#32
+	ADDI X15,X2,#8
+	
+	ADD X14,X15,X0
+	LDUR X14,[X14,#0]
+	
+	ADDI X9,X3,#0
+	ADDI X10,X4,#0
+	SUBS XZR,X10,X2
+	B.NE SECONDIF
+	B SWAP
+	ADDI X0,X9,#0
+	B PARTITIONEND
+	
+SECONDIF:
+	LSL X11,X10,#3
+	ADD X13,X11,X0
+	LDUR X12,[X13,#0]
+	SUBS XZR,X14,X12
+	B.NE CONTINUE
+	ADDI X2,X3,#1
+	B SWAP
+CONTINUE:
+	BL PARTITION
+	
+PARTITIONEND:
+	LDUR FP,[SP,#0]
+	LDUR LR,[SP,#8]
+	ADDI SP,SP,#40
+	BR LR
+
+////////////////////////////
+//                    	//
+//     quicksort   	//
+//                   	//
+////////////////////////////
+
+
+QUICKSORT: 
+	//   input:
+	//   X0: The address of (pointer to) the first value of the unsorted array (this value does not depend on the values of 'low' and 'high')
+    	//   X1: The value of 'low'
+	//   X2: The value of 'high'
+	
+	// INSERT YOUR CODE HERE
+	BR LR
+
+PRINTLIST:
+    
+    SUBIS XZR, X2, #9 // You can change the immediate value corresponding to the length of the array
+    B.EQ PRINTLIST_LOOP_END
+	MOV X1,X2
+ 	LSL X1,X1,#3
+	ADD X4,X7,X1
+    LDUR X1, [X4, #0]
+    PUTINT X1
+    PUTCHAR X3
+    ADDI X2, X2,#1
+    B PRINTLIST
+PRINTLIST_LOOP_END:
+    BR LR
