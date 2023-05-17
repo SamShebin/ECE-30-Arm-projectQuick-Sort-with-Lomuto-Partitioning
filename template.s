@@ -49,6 +49,7 @@ SWAP:
 	STUR X10,[X0,#0]
 	STUR X9,[X1,#0]
 
+SWAPEND:
 	LDUR FP,[SP,#0]
 	LDUR LR,[SP,#8]
 	LDUR X0,[SP,#16]
