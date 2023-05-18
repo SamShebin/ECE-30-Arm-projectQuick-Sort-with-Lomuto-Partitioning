@@ -1,7 +1,7 @@
 
 LDA X0, a
 ADDI X1,XZR,#0
-ADDI X2,XZR,#5
+ADDI X2,XZR,#4
 SUBI X3,X1,#1
 ADDI X4,X1,#0
 BL PARTITION
@@ -23,8 +23,8 @@ STUR X9,[X1,#0]
 
 LDUR X19 [X0,#0] // PRINTING FOR TESTING
 LDUR X20 [X1,#0]
-putint X19
-putint X20       // PRINTING FOR TESTING
+//putint X19
+//putint X20       // PRINTING FOR TESTING
 
 SWAPEND:
 LDUR FP,[SP,#0]
@@ -42,17 +42,7 @@ BR LR
 ////////////////////////////
 
 PARTITION: 
-	//   input:
-	//   X0: The address of (pointer to) the first value of the unsorted array (this value does not depend on the values of 'low' and 'high')
-    	//   X1: The value of 'low'
-	//   X2: The value of 'high'
-	//   X3: TPI, which is initialized as 'low-1' in Quicksort function
-	//   X4: CI, which is initialized as 'low' in Quicksort function
-	
-	//   output:
-	//   X0: the index of the pivot in the sorted array
- 	
-	// INSERT YOUR CODE HERE
+
 	SUBI SP,SP,#80
 	STUR FP,[SP,#0]
 	STUR LR,[SP,#8]
@@ -65,18 +55,19 @@ PARTITION:
 	LSL X15,X2,#3
 	
 	ADD X14,X15,X0
-	LDUR X14,[X14,#0] // X14 PIVOT VALUE
+	LDUR X20,[X14,#0] 
+	ADDI X14,X20,#0        // X14 PIVOT VALUE
 	
-	ADDI X9,X3,#0
+	ADDI X9,X3,#0 // X9 HAS I VALUE
 	ADDI X10,X4,#0  // X10 J VALUE
-	SUBS XZR,X10,X2
+	SUBS XZR,X10,X2  // CHECKING IF J == HIGH
 	B.NE SECONDIF
 	ADDI X9,X9,#1
 	LSL X13,X9,#3
 	ADD X0,X0,X13
 	LSL X11,X2,#3
 	LDUR X12,[SP,#16]
-	ADD X1,X11,X12
+	ADD X1,X11,X12 
 	BL SWAP
 	ADDI X0,X9,#0
 	B PARTITIONEND
@@ -90,10 +81,17 @@ SECONDIF:
 	B.GT CONTINUE
 	LDUR X3,[SP,#40]
 	ADDI X19,X3,#1
+	ADDI X3,X19,#0
 	LSL X19,X19,#3
 	ADD X0,X0,X19 // X0 HAS THE ADDRESS A[I]
+	ADDI X1,X17,#0
 	BL SWAP
 CONTINUE:
+	LDUR X0,[SP,#16]
+	LDUR X1,[SP,#24]
+	LDUR X2,[SP,#32]
+	LDUR X3,[SP,#40]
+	LDUR X4,[SP,#48]
 	ADDI X4,X10,#1
 	BL PARTITION
 	
